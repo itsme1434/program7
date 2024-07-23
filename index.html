@@ -31,70 +31,61 @@ document.addEventListener('click', function(event) {
 });
     
 document.getElementById("myInput").value = `
-using System;
-class Shape
-{
-    public virtual void Draw()
-    {
-        Console.WriteLine("Drawing a shape");
-    }
-    public virtual void Erase()
-    {
-        Console.WriteLine("Erasing a shape");
-    }
-}
-class Circle : Shape
-{
-    public override void Draw()
-    {
-        Console.WriteLine("Drawing a circle");
-    }
-    public override void Erase()
-    {
-        Console.WriteLine("Erasing a circle");
-    }
-}
-class Triangle : Shape
-{
-    public override void Draw()
-    {
-        Console.WriteLine("Drawing a triangle");
-    }
-
-    public override void Erase()
-    {
-        Console.WriteLine("Erasing a triangle");
-    }
-}
-class Square : Shape
-{
-    public override void Draw()
-    {
-        Console.WriteLine("Drawing a square");
-    }
-
-    public override void Erase()
-    {
-        Console.WriteLine("Erasing a square");
-    }
-}
-class Program
-{
-    static void Main(string[] args)
-    {
-        
-        Shape[] shapes = new Shape[3];
-        shapes[0] = new Circle();
-        shapes[1] = new Triangle();
-        shapes[2] = new Square();
-        foreach (Shape shape in shapes)
-        {
-            shape.Draw();
-            shape.Erase();
-            Console.WriteLine();
-        }
-    }
-}
+In lab7 subfolder, write code in models.py
+from django.db import models
+from django.forms import ModelForm
+class Student(models.Model):
+student_usn=models.CharField(max_length=20) 
+ student_name=models.CharField(max_length=100) 
+student_sem=models.IntegerField() 
+def __str__(self): 
+return self.student_name+"("+self.student_usn+")"
+class Project(models.Model): 
+student=models.ForeignKey(Student,on_delete=models.CASCADE)
+ptopic=models.CharField(max_length=200) 
+plangauges=models.CharField(max_length=200)
+pduration=models.IntegerField() 
+class ProjectReg(ModelForm): 
+required_css_class="required"
+class Meta:
+model=Project
+fields=['student','ptopic','plangauges','pduration']
+>python manage.py startapp lab7
+In lab7 subfolder, write code in views.py
+from django.shortcuts import render
+from django.http import HttpResponse
+from lab7.models import ProjectReg
+def add_project(request): 
+if request.method=="POST": 
+form=ProjectReg(request.POST) 
+if form.is_valid():
+form.save() 
+return HttpResponse("<h1>Record inserted successfully</h1>")
+else:
+return HttpResponse("<h1>Record not inserted</h1>")
+else: form=ProjectReg() 
+return render(request,"add_project.html",{"form":form})
+In the lab7 folder, create a subfolder ‘templates’ and within the templates subfolder 
+create a file ‘add_project.html’.
+<html>
+<form method="post" action="">
+{% csrf_token %}
+<table>
+{{ form.as_table}}
+<tr>
+<td>
+<input type="submit" value="Submit">
+</td>
+</tr>
+</table>
+</form>
+</html>
+In lab7 subfolder, write code in urls.py
+from django.urls import path
+from lab7.views import add_project
+urlpatterns = [
+path('add_project/',add_project),
+]
 `
 
 function myFunction() {
